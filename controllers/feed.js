@@ -161,6 +161,8 @@ exports.updatePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
   const postId = req.params.postId;
 
+  let postCreatorId;
+
   Post
     .findById(postId)
     .then(post => {
@@ -169,7 +171,7 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-
+      console.log(post.creator.toString(), req.userId)
       if (post.creator.toString() !== req.userId) {
         const error = new Error('Not authorized');
         error.statusCode = 403;
@@ -177,7 +179,16 @@ exports.deletePost = (req, res, next) => {
       }
 
       clearImage(post.imageUrl);
+      postCreatorId = post.creator;
       return post.remove();
+    })
+    .then(result => {
+      return User
+        .findById(postCreatorId);
+    })
+    .then(user => {
+      user.posts.pull(postId);
+      return user.save();
     })
     .then(result => {
       res
