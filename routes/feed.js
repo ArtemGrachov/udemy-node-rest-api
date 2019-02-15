@@ -21,14 +21,20 @@ const postValidators = [
 
 router.post(
   '/post',
+  isAuth,
   postValidators,
   feedController.createPost
 );
 
-router.get('/post/:postId', feedController.getPost);
+router.get(
+  '/post/:postId',
+  isAuth,
+  feedController.getPost
+);
 
 router.put(
   '/post/:postId',
+  isAuth,
   postValidators,
   feedController.updatePost
 );
