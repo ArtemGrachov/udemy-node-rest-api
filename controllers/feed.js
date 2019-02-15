@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { validationResult } = require('express-validator/check');
 const Post = require('../models/post');
-
+const User = require('../models/user');
 
 exports.getPosts = (req, res, next) => {
   const currentPage = +req.query.page || 1;
@@ -51,23 +51,36 @@ exports.createPost = (req, res, next) => {
   const content = req.body.content;
   const imageUrl = req.file.path;
 
+  let creator;
+  let newPost;
+
   const post = new Post({
     title,
     content, 
     imageUrl,
-    creator: {
-      name: 'John Doe'
-    }
+    creator: req.userId
   });
 
   post
     .save()
-    .then(post => {
+    .then(result => {
+      return User.findById(req.userId)
+    })
+    .then(user => {
+      creator = user;
+      user.posts.push(post);
+      return user.save();
+    })
+    .then(result => {
       res
         .status(201)
         .json({
           message: 'Post created successfully',
-          post
+          post,
+          creator: {
+            _id: creator._id,
+            name: creator.name 
+          }
         })
     })
     .catch(err => next(err));
@@ -118,6 +131,12 @@ exports.updatePost = (req, res, next) => {
         throw error;
       }
 
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error('Not authorized');
+        error.statusCode = 403;
+        throw error;
+      }
+
       if (imageUrl !== post.imageUrl) {
         clearImage(post.imageUrl);
       }
@@ -150,6 +169,13 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error('Not authorized');
+        error.statusCode = 403;
+        throw error;
+      }
+
       clearImage(post.imageUrl);
       return post.remove();
     })
