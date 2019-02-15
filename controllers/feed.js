@@ -4,7 +4,13 @@ exports.getPosts = (req, res, next) => {
     .json({
       posts: [{
         title: 'First post',
-        content: 'This is the first post'
+        content: 'This is the first post',
+        imageUrl: 'images/enhanced-buzz-1492-1379411828-15.jpg',
+        creator: {
+          name: 'John Doe'
+        },
+        createdAt: new Date(),
+        _id: new Date().toISOString()
       }]
     });
 };
@@ -18,9 +24,13 @@ exports.postPost = (req, res, next) => {
     .json({
       message: 'Post created successfully!',
       post: {
-        id: new Date().toISOString(),
         title,
         content,
+        creator: {
+          name: 'John Doe'
+        },
+        createdAt: new Date(),
+        _id: new Date().toISOString()
       }
     })
 }
