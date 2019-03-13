@@ -31,7 +31,7 @@ Request body:
 ```
 {
   email: string,
-  password: password
+  password: string
 }
 ```
 
@@ -39,6 +39,6 @@ Response body:
 ```
 {
   token: string,
-  userId
+  userId: string
 }
 ```
