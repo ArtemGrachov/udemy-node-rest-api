@@ -43,18 +43,20 @@ Response body:
 }
 ```
 
-## GET `/feed/posts`
+## GET `/feed/posts?page=number&postsPerPage=number`
 
 Response body:
 ```
-[
-  {
+{
+  message: string,
+  posts: [{
     _id: string,
     title: string,
     content: string,
     imageUrl: string
-  }
-]
+  }]
+  totalItems: 0
+}
 ```
 
 ## GET `/feed/post/:postId`
@@ -62,10 +64,13 @@ Response body:
 Response body:
 ```
 {
-  _id: string,
-  title: string,
-  content: string,
-  imageUrl: string
+  message: string,
+  post: {
+    _id: string,
+    title: string,
+    content: string,
+    imageUrl: string
+  }
 }
 ```
 
