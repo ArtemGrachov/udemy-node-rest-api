@@ -76,13 +76,11 @@ Response body:
 
 ## POST `/feed/post`
 
-Request body:
+Request body (form-data):
 ```
-{
   title: string,
   content: string,
-  imageUrl: string
-}
+  file: File
 ```
 
 Response body:
@@ -106,11 +104,9 @@ Response body:
 
 Request body:
 ```
-{
   title: string,
   content: string,
-  imageUrl: string
-}
+  file: File
 ```
 
 Response body:
