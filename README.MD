@@ -80,7 +80,7 @@ Request body (form-data):
 ```
   title: string,
   content: string,
-  file: File
+  image: File
 ```
 
 Response body:
@@ -106,7 +106,7 @@ Request body:
 ```
   title: string,
   content: string,
-  file: File
+  image: File
 ```
 
 Response body:
