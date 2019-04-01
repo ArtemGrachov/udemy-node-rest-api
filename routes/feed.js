@@ -35,7 +35,6 @@ router.get(
 router.put(
   '/post/:postId',
   isAuth,
-  postValidators,
   feedController.updatePost
 );
 

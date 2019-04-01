@@ -31,25 +31,25 @@ exports.getPosts = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const error = new Error('Validation failed');
-    error.statusCode = 422;
-    throw error;
-  }
-
-  if (!req.file) {
-    const error = new Error('No image provided.');
-    error.statusCode = 422;
-    throw error;
-  }
-
-  const title = req.body.title;
-  const content = req.body.content;
-  const imageUrl = req.file.path;
-
   try {
+    const errors = validationResult(req);
+  
+    if (!errors.isEmpty()) {
+      const error = new Error('Validation failed');
+      error.statusCode = 422;
+      throw error;
+    }
+  
+    if (!req.file) {
+      const error = new Error('No image provided.');
+      error.statusCode = 422;
+      throw error;
+    }
+  
+    const title = req.body.title;
+    const content = req.body.content;
+    const imageUrl = req.file.path;
+
     const post = await new Post({
       title,
       content, 
@@ -82,9 +82,8 @@ exports.createPost = async (req, res, next) => {
 }
 
 exports.getPost = async (req, res, next) => {
-  const postId = req.params.postId;
-
   try {
+    const postId = req.params.postId;
     const post = await Post.findById(postId);
 
     if (!post) {
@@ -114,12 +113,6 @@ exports.updatePost = async (req, res, next) => {
     imageUrl = req.file.path;
   }
 
-  if (!imageUrl) {
-    const error = new Error('No file picked');
-    error.statusCode = 422;
-    throw error;
-  }
-
   try {
     const post = await Post.findById(postId).populate('creator');
 
@@ -139,9 +132,9 @@ exports.updatePost = async (req, res, next) => {
       clearImage(post.imageUrl);
     }
 
-    post.title = title;
-    post.imageUrl = imageUrl;
-    post.content = content;
+    if (title) post.title = title;
+    if (imageUrl) post.imageUrl = imageUrl;
+    if (content) post.content = content;
 
     const result = await post.save();
 
@@ -199,6 +192,8 @@ exports.deletePost = async (req, res, next) => {
 }
 
 const clearImage = filePath => {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath);
+  try {
+    filePath = path.join(__dirname, '..', filePath);
+    fs.unlink(filePath);
+  } catch (err) { }
 }
