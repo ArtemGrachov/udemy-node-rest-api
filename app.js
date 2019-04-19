@@ -74,6 +74,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true })
   .then(result => {
+    console.log('Successfully connected to database');
     const server = app.listen(8080);
     const io = require('./socket').init(server);
     io.on('connection', socket => {
