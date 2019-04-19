@@ -58,7 +58,7 @@ try {
 
   app.use('/auth', authRoutes);
   app.use('/feed', feedRoutes);
-  app.use('', () => {
+  app.use('', (req, res, next) => {
     const error = new Error('Not found');
     error.statusCode = 404;
     next(error)
@@ -79,8 +79,10 @@ try {
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true })
   .then(result => {
+    const port = process.env.PORT || 8080;
+    console.log(`Server launched. Port: ${port}`);
     console.log('Successfully connected to database');
-    const server = app.listen(8080);
+    const server = app.listen(port);
     const io = require('./socket').init(server);
     io.on('connection', socket => {
       console.log('Client connected');
