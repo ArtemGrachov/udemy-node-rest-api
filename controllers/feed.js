@@ -6,10 +6,10 @@ const User = require('../models/user');
 const io = require('../socket');
 
 exports.getPosts = async (req, res, next) => {
-  const currentPage = +req.query.page || 1;
-  const postsPerPage = +req.query.postsPerPage || 2;
-
   try {
+    const currentPage = +req.query.page || 1;
+    const postsPerPage = +req.query.postsPerPage || 2;
+  
     const totalItems = await Post.find().countDocuments();
 
     const posts = await Post.find()
@@ -104,16 +104,16 @@ exports.getPost = async (req, res, next) => {
 }
 
 exports.updatePost = async (req, res, next) => {
-  const postId = req.params.postId;
-  const title = req.body.title;
-  const content = req.body.content;
-  let imageUrl = req.body.image;
-
-  if (req.file) {
-    imageUrl = req.file.path;
-  }
-
   try {
+    const postId = req.params.postId;
+    const title = req.body.title;
+    const content = req.body.content;
+    let imageUrl = req.body.image;
+  
+    if (req.file) {
+      imageUrl = req.file.path;
+    }
+  
     const post = await Post.findById(postId).populate('creator');
 
     if (!post) {
@@ -152,11 +152,11 @@ exports.updatePost = async (req, res, next) => {
 }
 
 exports.deletePost = async (req, res, next) => {
-  const postId = req.params.postId;
-
-  let postCreatorId;
-
   try {
+    const postId = req.params.postId;
+  
+    let postCreatorId;
+  
     const post = await Post.findById(postId);
 
     if (!post) {

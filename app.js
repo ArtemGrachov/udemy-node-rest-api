@@ -56,6 +56,11 @@ const feedRoutes = require('./routes/feed');
 
 app.use('/auth', authRoutes);
 app.use('/feed', feedRoutes);
+app.use('', () => {
+  const error = new Error('Not found');
+  error.statusCode = 404;
+  next(error)
+})
 
 app.use((error, req, res, next) => {
   console.log(error);
