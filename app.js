@@ -26,7 +26,17 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const MONGODB_URI = 'mongodb://localhost:27017/udemy-rest';
+let MONGODB_URI;
+
+if (process.env.PRODUCTION) {
+  const user = process.env.USER;
+  const password = process.env.PASSWORD;
+  const url = process.env.URL;
+  MONGODB_URI = `mongodb+srv://${user}:${password}@${url}`;
+} else {
+  MONGODB_URI = 'mongodb://localhost:27017/udemy-rest';
+}
+
 
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
